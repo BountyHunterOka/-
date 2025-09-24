@@ -47,7 +47,7 @@ auth = 'ertyrKASazex+K8oEGRnptUXDNZW2tIbFzdssmZKcJPUzg27ccENIlAmbT57zusN/epigWD9
 # 你有 5 个用户：在下面填 token/auth（示例留空，你自己填）
 USERS = {
     1: {"token": "9118E4599ECE7EC40E2DED3626458092", "auth": f"{auth}"},
-    2: {"token": "", "auth": f"{auth}"},
+    2: {"token": "AAA30A0D95155E2833019071DA7A6FF7", "auth": f"{auth}"},
     3: {"token": "BC40F59FC0DDD1FE2866B7B9572EC0AA", "auth": f"{auth}"},
     4: {"token": "86B7E78789CAA20D0D08757730C897F4", "auth": f"{auth}"},
     5: {"token": "44D12C8BE494804D7C3BAAA45ADBB2E5", "auth": f"{auth}"},
