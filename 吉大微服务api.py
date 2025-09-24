@@ -6,8 +6,18 @@ import requests
 import json
 import threading
 import time
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="羽毛球场预约 API")
+
+# 允许跨域
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],        # 这里可以改成 ["https://你的前端域名"] 更安全
+    allow_credentials=True,
+    allow_methods=["*"],        # 允许所有方法（GET, POST, OPTIONS 等）
+    allow_headers=["*"],        # 允许所有头
+)
 
 # ---------- 固定参数（可按需修改） ----------
 URL = 'https://ss.jlu.edu.cn/easyserpClient/place/freeBuyPlace'
@@ -36,7 +46,7 @@ TIME_SLOTS = {
 
 # 你有 5 个用户：在下面填 token/auth（示例留空，你自己填）
 USERS = {
-    1: {"token": "", "auth": ""},
+    1: {"token": "9118E4599ECE7EC40E2DED3626458092", "auth": "ertyrKASazex+K8oEGRnptUXDNZW2tIbFzdssmZKcJPUzg27ccENIlAmbT57zusN/epigWD9kDJEkASDroZUCXh3xa8Q7xVBnmLPMTqbVKQ2u4w9/NS16KwTdYaciNZ6RWXx0BO72mtVPaMA0In87u33/0sRQ5gww26VJHSDUH0kK7Zs4EZMv+5NTc6iBhzAatI/K9tEk9Pj6gWiUibm+Tp4AS9YJ1ikO9OH0yGOdoC3kcvevd/je65jWYgxwHpud6q3bECGT3nqwYNPmJwXygn75bXliloq7h+pdEOtd2KovvIURxjV01aNCbPfhgKccsTI8a5vT9ulQwlqZb0FfA==:SWE9RC0ENX/2DjshLPr9OTC//Ozqf2JJu6t8fqBVvKtdq2lLt9kGDF3t+2EzVdueKtdr0C8kFqsDzJPYCLbsL4b82j+PC/QzkICIxxuldO2RzOnWijeZX8j52vWIzj2A2/jm3Rl3HYFHOu1UXAnQMzg61WsKU3vzlRfEcnv9H7WYv1RbAhcb2n8pU1qNUK1bv0VTHVcB+1xwiJKXdIgKRpaGIwUkeqZWEyVcoeKCP2bwfbdL16FA5/eK5dbYCzMSQS5Keg0hyn8XP2dJCrFO5i96+JrDWpkrUo8TCo4zx1/GVUiEelsLPomGrAuG6sRr"},
     2: {"token": "", "auth": ""},
     3: {"token": "", "auth": ""},
     4: {"token": "", "auth": ""},
