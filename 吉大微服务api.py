@@ -115,7 +115,7 @@ def schedule_at_midnight(func, *args, **kwargs):
     这里用线程实现后台延迟执行（只做示例）。
     """
     now = datetime.now()
-    tomorrow = now + timedelta(days=1)
+    tomorrow = now + timedelta(days=2)
     target = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0)
     wait_seconds = (target - now).total_seconds()
     def runner():
