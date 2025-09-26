@@ -131,6 +131,7 @@ def schedule_at_midnight(func, *args, **kwargs):
 
     def runner():
         time.sleep(wait_seconds)
+        time.sleep(1.5)
         try:
             func(*args, **kwargs)
         except Exception as e:
