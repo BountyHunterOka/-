@@ -112,19 +112,30 @@ def do_post_request(token: str, auth: str, fieldinfo_str: str, shopNum: str, old
 
 def schedule_at_midnight(func, *args, **kwargs):
     """
-    在当天午夜（00:00:00）触发一次 func。
-    这里用线程实现后台延迟执行（只做示例）。
+    在本地时间午夜（0 点）触发一次 func。
+    服务器比本地慢 8 小时 → 服务器 16 点 = 本地 0 点。
     """
     now = datetime.now()
-    tomorrow = now + timedelta(days=2)
-    target = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0)
+    
+    # 本地 0 点对应的服务器时间：今天 16 点
+    target = datetime(now.year, now.month, now.day, 16, 0, 0)
+    
+    # 如果当前时间已经过了今天 16 点 → 说明要等到明天 16 点
+    if now >= target:
+        target = target + timedelta(days=1)
+
     wait_seconds = (target - now).total_seconds()
+    wait_minutes = wait_seconds / 60
+
+    print(f"距离本地 0 点还有 {wait_minutes:.2f} 分钟（约 {wait_seconds:.0f} 秒），将在 {target} 触发请求")
+
     def runner():
         time.sleep(wait_seconds)
         try:
             func(*args, **kwargs)
         except Exception as e:
             print("midnight job error:", e)
+
     t = threading.Thread(target=runner, daemon=True)
     t.start()
     return True
