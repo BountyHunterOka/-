@@ -167,6 +167,7 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
         try:
             resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
+            print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
             return {"status_code": resp.status_code, "text": resp.text}
         except Exception as e:
