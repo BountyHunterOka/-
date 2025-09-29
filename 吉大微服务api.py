@@ -169,6 +169,9 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
+            if '请勿重复操作' in resp.text:
+                execute_send()
+                return '未开放再次尝试'
             return {"status_code": resp.status_code, "text": resp.text}
         except Exception as e:
             print("请求异常:", e)
