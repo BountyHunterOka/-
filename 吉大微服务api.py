@@ -9,6 +9,7 @@ import time
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="羽毛球场预约 API")
+force_stop = True
 
 # 允许跨域
 app.add_middleware(
@@ -115,6 +116,8 @@ def schedule_at_midnight(func, *args, **kwargs):
     在本地时间午夜（0 点）触发一次 func。
     服务器比本地慢 8 小时 → 服务器 16 点 = 本地 0 点。
     """
+    global force_stop
+    force_stop = True
     now = datetime.now()
     
     # 本地 0 点对应的服务器时间：今天 16 点
@@ -124,14 +127,13 @@ def schedule_at_midnight(func, *args, **kwargs):
     if now >= target:
         target = target + timedelta(days=1)
 
-    wait_seconds = (target - now).total_seconds()
+    wait_seconds = (target - now).total_seconds() - 2
     wait_minutes = wait_seconds / 60
 
     print(f"距离本地 0 点还有 {wait_minutes:.2f} 分钟（约 {wait_seconds:.0f} 秒），将在 {target} 触发请求")
 
     def runner():
         time.sleep(wait_seconds)
-        time.sleep(2.5)
         try:
             func(*args, **kwargs)
         except Exception as e:
@@ -169,9 +171,8 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
-            if '请勿重复操作' in resp.text:
+            if '请勿重复操作' in resp.text and force_stop:
                 execute_send()
-                return '未开放再次尝试'
             return {"status_code": resp.status_code, "text": resp.text}
         except Exception as e:
             print("请求异常:", e)
@@ -191,6 +192,12 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
 @app.get("/time_slots")
 def get_time_slots():
     return {"time_slots": list(TIME_SLOTS.keys())}
+
+@app.get("/stop")
+def force_stopp():
+    global force_stop
+    force_stop = False
+
 
 @app.get("/health")
 def health():
