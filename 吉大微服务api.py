@@ -175,7 +175,7 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             for i in range(5):  # 最多重试3次
                 if '请勿重复操作' in resp.text and force_stop:
                     time.sleep(0.5)
-                    execute_send()
+                    resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
                     continue
                 break
             return {"status_code": resp.status_code, "text": resp.text}
