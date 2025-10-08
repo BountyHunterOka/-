@@ -111,6 +111,9 @@ def do_post_request(token: str, auth: str, fieldinfo_str: str, shopNum: str, old
     session = requests.Session()
     resp = session.post(url=URL, headers=headers, data=body, timeout=15)
     return resp
+    with requests.Session() as s:
+        resp = s.post(URL, headers=headers, data=body, timeout=10)
+    return resp
 
 def schedule_at_midnight(func, *args, **kwargs):
     """
@@ -172,9 +175,9 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
-            for i in range(5):  # 最多重试3次
+            for i in range(13):  # 最多重试3次
                 if '请勿重复操作' in resp.text and force_stop:
-                    time.sleep(0.5)
+                    time.sleep(0.35)
                     resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
                     continue
                 break
