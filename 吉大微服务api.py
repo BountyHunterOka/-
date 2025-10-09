@@ -175,11 +175,11 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
-            for i in range(13):  # 最多重试3次
+            for i in range(70):  
                 if '请勿重复操作' in resp.text and force_stop:
-                    time.sleep(0.35)
+                    time.sleep(0.65)
                     resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
-                    print(resp.text)
+                    print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
                     continue
                 break
             return {"status_code": resp.status_code, "text": resp.text}
