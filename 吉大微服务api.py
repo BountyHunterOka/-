@@ -179,6 +179,7 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
                 if '请勿重复操作' in resp.text and force_stop:
                     time.sleep(0.35)
                     resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
+                    print(resp.text)
                     continue
                 break
             return {"status_code": resp.status_code, "text": resp.text}
