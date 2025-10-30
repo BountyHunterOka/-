@@ -125,7 +125,7 @@ def schedule_at_midnight(func, *args, **kwargs):
     now = datetime.now()
     
     # 本地 0 点对应的服务器时间：今天 16 点
-    target = datetime(now.year, now.month, now.day, 16, 0, 0)
+    target = datetime(now.year, now.month, now.day, 23, 30, 0)
     
     # 如果当前时间已经过了今天 16 点 → 说明要等到明天 16 点
     if now >= target:
