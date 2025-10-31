@@ -176,7 +176,7 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
             for i in range(120):  
-                if '请勿重复操作' in resp.text and force_stop:
+                if （'请勿重复操作' in resp.text or '时间内预约' in resp.text) and force_stop:
                     time.sleep(0.3)
                     resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
                     print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
