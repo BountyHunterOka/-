@@ -108,9 +108,6 @@ def do_post_request(token: str, auth: str, fieldinfo_str: str, shopNum: str, old
         "txUserIds": "[2622]"
     }
     # 使用 application/x-www-form-urlencoded
-    session = requests.Session()
-    resp = session.post(url=URL, headers=headers, data=body, timeout=15)
-    return resp
     with requests.Session() as s:
         resp = s.post(URL, headers=headers, data=body, timeout=10)
     return resp
@@ -169,19 +166,25 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
     fieldinfo_str = build_fieldinfo(req.place, start_time, end_time)
 
     # 执行函数（用于立即或在后台调用）
-    def execute_send():
+    def execute_send(condition=True):
         try:
             resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
             # 你可以在这里把结果写入数据库或日志文件。为了简洁我们打印并返回 resp.text
             print('被预约时间: ' + fieldinfo_str)
             print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
-            for i in range(120):  
-                if ('请勿重复操作' in resp.text or '时间内预约' in resp.text) and force_stop:
-                    time.sleep(0.3)
-                    resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
-                    print("预约响应（执行时间 {}）: {}".format(datetime.now().isoformat(), resp.text))
-                    continue
-                break
+            if condition:
+                for i in range(160):  
+                    if ('请勿重复操作' in resp.text or '时间内预约' in resp.text or '预约失败' in resp.text) and force_stop:
+                        time.sleep(0.15)
+                        resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
+                        print("预约响应（执行时间 {}）: {} : {}".format(datetime.now().isoformat(), resp.text, token))
+                        continue
+                    break
+            else:
+                 resp = do_post_request(token=token, auth=auth, fieldinfo_str=fieldinfo_str, shopNum=req.shopNum)
+                 print("预约响应（执行时间 {}）: {} : {}".format(datetime.now().isoformat(), resp.text, token))
+                
+            
             return {"status_code": resp.status_code, "text": resp.text}
         except Exception as e:
             print("请求异常:", e)
@@ -193,7 +196,7 @@ def reserve(req: ReserveRequest, background_tasks: BackgroundTasks):
         return {"success": True, "scheduled": True, "message": "已安排在午夜执行（0:00）"}
     else:
         # 立即执行并返回结果
-        result = execute_send()
+        result = execute_send(False)
         return {"success": True, "scheduled": False, "result": result}
 
 
