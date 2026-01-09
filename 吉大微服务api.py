@@ -73,7 +73,7 @@ def get_credentials(req: ReserveRequest):
     return token, auth
 
 def build_fieldinfo(place: int, start_time: str, end_time: str):
-    tomorrow = datetime.now() + timedelta(days=1)
+    tomorrow = datetime.now() + timedelta(days=2)
     date_str = tomorrow.strftime("%Y-%m-%d")
     print(date_str)
     fieldinfo = [{
