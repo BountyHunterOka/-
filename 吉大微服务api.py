@@ -107,7 +107,7 @@ def schedule_at_midnight(func, *args, **kwargs):
     force_stop = True
     now = datetime.now()
     
-    target = datetime(now.year, now.month, now.day, 23, 30, 0)
+    target = datetime(now.year, now.month, now.day, 23, 31, 0)
     if now >= target:
         target = target + timedelta(days=1)
 
